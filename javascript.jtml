@@ -1,0 +1,2546 @@
+<script>
+
+/*******************************************************
+ * APPLICATION STATE
+ *******************************************************/
+
+let currentPage = 1;
+
+let settings = {
+
+  parishName:
+    'Chalassery, St.Pius X Church',
+
+  wards: [],
+
+  maxMembers: 20
+
+};
+
+
+/*
+ * The head is always member #1.
+ * Additional members are stored here.
+ */
+
+let additionalMembers = [];
+
+
+/*******************************************************
+ * INITIALIZATION
+ *******************************************************/
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function() {
+
+    loadSettings();
+
+    setupInputRestrictions();
+
+    syncHeadName();
+
+  }
+);
+
+
+/*******************************************************
+ * LOAD SETTINGS FROM GOOGLE SHEETS
+ *******************************************************/
+
+function loadSettings() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        settings = result;
+
+
+        document
+          .getElementById('parishName')
+          .value =
+            settings.parishName;
+
+
+        populateWards(
+          settings.wards
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        console.error(error);
+
+        document
+          .getElementById('parishName')
+          .value =
+            'Chalassery, St.Pius X Church';
+
+      }
+    )
+
+    .getSettings();
+
+}
+
+
+/*******************************************************
+ * POPULATE PARISH WARDS
+ *******************************************************/
+
+function populateWards(wards) {
+
+  const select =
+    document.getElementById(
+      'parishWard'
+    );
+
+
+  select.innerHTML = `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  `;
+
+
+  wards.forEach(
+    function(ward) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+
+      option.value = ward;
+
+      option.textContent = ward;
+
+
+      select.appendChild(option);
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * INPUT RESTRICTIONS
+ *******************************************************/
+
+function setupInputRestrictions() {
+
+  const mobile =
+    document.getElementById(
+      'mobile'
+    );
+
+
+  mobile.addEventListener(
+    'input',
+    function() {
+
+      this.value =
+        this.value
+          .replace(/\D/g, '')
+          .substring(0, 10);
+
+    }
+  );
+
+
+  const pin =
+    document.getElementById(
+      'pinCode'
+    );
+
+
+  pin.addEventListener(
+    'input',
+    function() {
+
+      this.value =
+        this.value
+          .replace(/\D/g, '')
+          .substring(0, 6);
+
+    }
+  );
+
+
+  document
+    .getElementById('headName')
+    .addEventListener(
+      'input',
+      syncHeadName
+    );
+
+
+  document
+    .getElementById('headFullName')
+    .addEventListener(
+      'input',
+      syncHeadName
+    );
+
+}
+
+
+/*******************************************************
+ * SYNC HEAD NAME
+ *******************************************************/
+
+function syncHeadName() {
+
+  const page1Name =
+    document
+      .getElementById('headName')
+      .value;
+
+
+  const page2Name =
+    document
+      .getElementById('headFullName');
+
+
+  /*
+   * Only automatically copy when
+   * Page 2 has not been manually changed.
+   */
+
+  if (
+    page2Name &&
+    (
+      page2Name.value === '' ||
+      page2Name.dataset.auto === 'true'
+    )
+  ) {
+
+    page2Name.value =
+      page1Name;
+
+    page2Name.dataset.auto =
+      'true';
+
+  }
+
+}
+
+
+/*******************************************************
+ * GO TO PAGE
+ *******************************************************/
+
+function goToPage(pageNumber) {
+
+  /*
+   * Validate before moving forward.
+   */
+
+  if (
+    pageNumber > currentPage
+  ) {
+
+    if (
+      !validatePage(
+        currentPage
+      )
+    ) {
+
+      return;
+
+    }
+
+  }
+
+
+  /*
+   * Special handling when
+   * entering Page 3.
+   */
+
+  if (pageNumber === 3) {
+
+    initializeMembers();
+
+  }
+
+
+  /*
+   * Special handling when
+   * entering Page 4.
+   */
+
+  if (pageNumber === 4) {
+
+    if (
+      !validatePage(3)
+    ) {
+
+      return;
+
+    }
+
+
+    buildPreview();
+
+  }
+
+
+  showPage(pageNumber);
+
+}
+
+
+/*******************************************************
+ * SHOW PAGE
+ *******************************************************/
+
+function showPage(pageNumber) {
+
+  document
+    .querySelectorAll('.page')
+    .forEach(
+      function(page) {
+
+        page.classList.remove(
+          'active'
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      'page' + pageNumber
+    )
+    .classList.add('active');
+
+
+  currentPage =
+    pageNumber;
+
+
+  const percentage =
+    pageNumber * 25;
+
+
+  document
+    .getElementById(
+      'progressFill'
+    )
+    .style.width =
+      percentage + '%';
+
+
+  document
+    .getElementById(
+      'progressText'
+    )
+    .textContent =
+      'Page ' +
+      pageNumber +
+      ' of 4';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/*******************************************************
+ * VALIDATE PAGE
+ *******************************************************/
+
+function validatePage(pageNumber) {
+
+  const page =
+    document.getElementById(
+      'page' + pageNumber
+    );
+
+
+  const inputs =
+    page.querySelectorAll(
+      'input, select, textarea'
+    );
+
+
+  for (
+    let i = 0;
+    i < inputs.length;
+    i++
+  ) {
+
+    const input =
+      inputs[i];
+
+
+    if (
+      !input.checkValidity()
+    ) {
+
+      input.reportValidity();
+
+      input.focus();
+
+      return false;
+
+    }
+
+  }
+
+
+  /*
+   * Extra validation for Page 1
+   */
+
+  if (pageNumber === 1) {
+
+    const mobile =
+      document
+        .getElementById('mobile')
+        .value
+        .trim();
+
+
+    if (
+      !/^[0-9]{10}$/.test(mobile)
+    ) {
+
+      alert(
+        'Please enter a valid 10-digit mobile number.'
+      );
+
+      document
+        .getElementById('mobile')
+        .focus();
+
+      return false;
+
+    }
+
+
+    const pin =
+      document
+        .getElementById('pinCode')
+        .value
+        .trim();
+
+
+    if (
+      !/^[0-9]{6}$/.test(pin)
+    ) {
+
+      alert(
+        'Please enter a valid 6-digit PIN Code.'
+      );
+
+      document
+        .getElementById('pinCode')
+        .focus();
+
+      return false;
+
+    }
+
+  }
+
+
+  /*
+   * Page 3
+   */
+
+  if (pageNumber === 3) {
+
+    if (
+      getAllMembers().length < 1
+    ) {
+
+      alert(
+        'Family head information is required.'
+      );
+
+      return false;
+
+    }
+
+  }
+
+
+  return true;
+
+}
+
+
+/*******************************************************
+ * INITIALIZE MEMBERS
+ *******************************************************/
+
+function initializeMembers() {
+
+  /*
+   * We don't need to create the head
+   * in additionalMembers because the
+   * head is always generated from Page 2.
+   */
+
+  renderMemberPage();
+
+}
+
+
+/*******************************************************
+ * CREATE HEAD MEMBER
+ *******************************************************/
+
+function getHeadMember() {
+
+  return {
+
+    isHead: true,
+
+    fullName:
+      getValue('headFullName'),
+
+    dateOfBirth:
+      getValue('headDOB'),
+
+    relation:
+      'SELF',
+
+    currentStatus:
+      getValue('headStatus'),
+
+    date:
+      getValue('headDate'),
+
+    qualification:
+      getValue('headQualification'),
+
+    occupation:
+      getValue('headOccupation'),
+
+    country:
+      getValue('headCountry'),
+
+    state:
+      getValue('headState'),
+
+    city:
+      getValue('headCity'),
+
+    healthCondition:
+      getValue('headHealth'),
+
+    practicingCatholic:
+      getValue('headCatholic'),
+
+    churchActivities:
+      getValue('headChurchActivity')
+
+  };
+
+}
+
+
+/*******************************************************
+ * GET ALL MEMBERS
+ *******************************************************/
+
+function getAllMembers() {
+
+  const head =
+    getHeadMember();
+
+
+  return [
+    head,
+    ...additionalMembers
+  ];
+
+}
+
+
+/*******************************************************
+ * ADD FAMILY MEMBER
+ *******************************************************/
+
+function addFamilyMember() {
+
+  const total =
+    getAllMembers().length;
+
+
+  if (
+    total >= settings.maxMembers
+  ) {
+
+    alert(
+      'Maximum ' +
+      settings.maxMembers +
+      ' family members are allowed.'
+    );
+
+    return;
+
+  }
+
+
+  additionalMembers.push({
+
+    isHead: false,
+
+    fullName: '',
+
+    dateOfBirth: '',
+
+    relation: '',
+
+    currentStatus: '',
+
+    date: '',
+
+    qualification: '',
+
+    occupation: '',
+
+    country: 'India',
+
+    state: 'Kerala',
+
+    city: '',
+
+    healthCondition: '',
+
+    practicingCatholic: '',
+
+    churchActivities: ''
+
+  });
+
+
+  renderMemberPage();
+
+
+  /*
+   * Scroll to the newly added member.
+   */
+
+  setTimeout(
+    function() {
+
+      const cards =
+        document.querySelectorAll(
+          '.member-card'
+        );
+
+
+      if (cards.length > 0) {
+
+        cards[
+          cards.length - 1
+        ].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+
+      }
+
+    },
+    100
+  );
+
+}
+
+
+/*******************************************************
+ * REMOVE MEMBER
+ *******************************************************/
+
+function removeMember(index) {
+
+  /*
+   * index 0 is the head.
+   */
+
+  if (index === 0) {
+
+    alert(
+      'The Head of Family cannot be removed.'
+    );
+
+    return;
+
+  }
+
+
+  const additionalIndex =
+    index - 1;
+
+
+  if (
+    !confirm(
+      'Remove this family member?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  additionalMembers.splice(
+    additionalIndex,
+    1
+  );
+
+
+  renderMemberPage();
+
+}
+
+
+/*******************************************************
+ * RENDER MEMBER PAGE
+ *******************************************************/
+
+function renderMemberPage() {
+
+  const container =
+    document.getElementById(
+      'memberFormArea'
+    );
+
+
+  container.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const card =
+        document.createElement(
+          'div'
+        );
+
+
+      card.className =
+        'member-card' +
+        (
+          member.isHead
+          ? ' self'
+          : ''
+        );
+
+
+      const title =
+        member.isHead
+        ? `
+          Family Member ${index + 1}
+          <span class="self-label">
+            SELF
+          </span>
+        `
+        : `
+          Family Member ${index + 1}
+        `;
+
+
+      const removeButton =
+        member.isHead
+        ? ''
+        : `
+          <button
+            type="button"
+            class="action-button delete-button"
+            onclick="removeMember(${index})">
+
+            🗑
+
+          </button>
+        `;
+
+
+      card.innerHTML = `
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+          ">
+
+          <h3>
+            ${title}
+          </h3>
+
+          ${removeButton}
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- FULL NAME -->
+
+          <div class="field">
+
+            <label>
+              Full Name <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              class="member-input"
+              data-index="${index}"
+              data-field="fullName"
+              value="${escapeAttribute(member.fullName)}"
+              ${member.isHead ? 'readonly' : ''}
+              required>
+
+          </div>
+
+
+          <!-- DOB -->
+
+          <div class="field">
+
+            <label>
+              Date of Birth <span>*</span>
+            </label>
+
+            <input
+              type="date"
+              class="member-input"
+              data-index="${index}"
+              data-field="dateOfBirth"
+              value="${escapeAttribute(member.dateOfBirth)}"
+              ${member.isHead ? 'readonly' : ''}
+              required>
+
+          </div>
+
+
+          <!-- STATUS -->
+
+          <div class="field">
+
+            <label>
+              Current Status <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="currentStatus"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${statusOptions(
+                member.currentStatus
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- DATE -->
+
+          <div class="field">
+
+            <label>
+              Date
+            </label>
+
+            <input
+              type="date"
+              class="member-input"
+              data-index="${index}"
+              data-field="date"
+              value="${escapeAttribute(member.date)}"
+              ${member.isHead ? 'readonly' : ''}>
+
+          </div>
+
+
+          <!-- QUALIFICATION -->
+
+          <div class="field">
+
+            <label>
+              Qualification <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="qualification"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${qualificationOptions(
+                member.qualification
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- OCCUPATION -->
+
+          <div class="field">
+
+            <label>
+              Occupation <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="occupation"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${occupationOptions(
+                member.occupation
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- COUNTRY -->
+
+          <div class="field">
+
+            <label>
+              Country <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="country"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${countryOptions(
+                member.country
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- STATE -->
+
+          <div class="field">
+
+            <label>
+              State <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="state"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${stateOptions(
+                member.state
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- CITY -->
+
+          <div class="field">
+
+            <label>
+              City <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              class="member-input"
+              data-index="${index}"
+              data-field="city"
+              value="${escapeAttribute(member.city)}"
+              ${member.isHead ? 'readonly' : ''}
+              required>
+
+          </div>
+
+
+          <!-- HEALTH -->
+
+          <div class="field">
+
+            <label>
+              Health condition <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="healthCondition"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${healthOptions(
+                member.healthCondition
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- CATHOLIC -->
+
+          <div class="field">
+
+            <label>
+              Are you a Practicing Catholic?
+              <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="practicingCatholic"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${yesNoOptions(
+                member.practicingCatholic
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- CHURCH ACTIVITIES -->
+
+          <div class="field">
+
+            <label>
+              Are you active in any of the
+              Church Activities?
+              <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="churchActivities"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${churchActivityOptions(
+                member.churchActivities
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- RELATION -->
+
+          <div class="field">
+
+            <label>
+              Relation with Head of Family
+              <span>*</span>
+            </label>
+
+            ${
+              member.isHead
+              ?
+              `
+                <input
+                  type="text"
+                  value="SELF"
+                  readonly>
+              `
+              :
+              `
+                <select
+                  class="member-input"
+                  data-index="${index}"
+                  data-field="relation"
+                  required>
+
+                  ${relationOptions(
+                    member.relation
+                  )}
+
+                </select>
+              `
+            }
+
+          </div>
+
+
+        </div>
+
+      `;
+
+
+      container.appendChild(card);
+
+    }
+  );
+
+
+  /*
+   * Attach change events.
+   */
+
+  container
+    .querySelectorAll(
+      '.member-input'
+    )
+    .forEach(
+      function(input) {
+
+        input.addEventListener(
+          'input',
+          memberInputChanged
+        );
+
+
+        input.addEventListener(
+          'change',
+          memberInputChanged
+        );
+
+      }
+    );
+
+
+  updateMemberCounter();
+
+  renderMemberTable();
+
+}
+
+
+/*******************************************************
+ * MEMBER INPUT CHANGE
+ *******************************************************/
+
+function memberInputChanged(event) {
+
+  const input =
+    event.target;
+
+
+  const index =
+    Number(
+      input.dataset.index
+    );
+
+
+  const field =
+    input.dataset.field;
+
+
+  /*
+   * Index 0 = head.
+   * Head data lives on Page 2.
+   */
+
+  if (index === 0) {
+
+    return;
+
+  }
+
+
+  const member =
+    additionalMembers[
+      index - 1
+    ];
+
+
+  if (member) {
+
+    member[field] =
+      input.value;
+
+  }
+
+}
+
+
+/*******************************************************
+ * MEMBER TABLE
+ *******************************************************/
+
+function renderMemberTable() {
+
+  const body =
+    document.getElementById(
+      'memberTableBody'
+    );
+
+
+  body.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const row =
+        document.createElement(
+          'tr'
+        );
+
+
+      row.innerHTML = `
+
+        <td>
+          ${index + 1}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.fullName
+          )}
+        </td>
+
+        <td>
+          ${formatDate(
+            member.dateOfBirth
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.relation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.occupation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            buildLocation(member)
+          )}
+        </td>
+
+        <td>
+
+          ${
+            member.isHead
+            ?
+            '<span>—</span>'
+            :
+            `
+              <button
+                type="button"
+                class="action-button delete-button"
+                onclick="removeMember(${index})">
+
+                🗑
+
+              </button>
+            `
+          }
+
+        </td>
+
+      `;
+
+
+      body.appendChild(row);
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * MEMBER COUNTER
+ *******************************************************/
+
+function updateMemberCounter() {
+
+  const total =
+    getAllMembers().length;
+
+
+  document
+    .getElementById(
+      'memberCount'
+    )
+    .textContent =
+      total +
+      ' / ' +
+      settings.maxMembers +
+      ' members';
+
+
+  document
+    .getElementById(
+      'addMemberButton'
+    )
+    .disabled =
+      total >= settings.maxMembers;
+
+}
+
+
+/*******************************************************
+ * BUILD PREVIEW
+ *******************************************************/
+
+function buildPreview() {
+
+  const ward =
+    getValue('parishWard');
+
+
+  const house =
+    getValue('houseName');
+
+
+  document
+    .getElementById(
+      'previewHouseWard'
+    )
+    .textContent =
+      house +
+      ' - ' +
+      settings.parishName;
+
+
+  document
+    .getElementById(
+      'previewWard'
+    )
+    .textContent =
+      ward;
+
+
+  document
+    .getElementById(
+      'previewMobile'
+    )
+    .textContent =
+      getValue('mobile');
+
+
+  document
+    .getElementById(
+      'previewEmail'
+    )
+    .textContent =
+      getValue('email') ||
+      '—';
+
+
+  document
+    .getElementById(
+      'previewAddress'
+    )
+    .textContent =
+      getValue('address') +
+      ' - ' +
+      getValue('pinCode');
+
+
+  document
+    .getElementById(
+      'previewEconomic'
+    )
+    .textContent =
+      getValue('economicStatus');
+
+
+  document
+    .getElementById(
+      'previewResidence'
+    )
+    .textContent =
+      getValue('residenceYears');
+
+
+  document
+    .getElementById(
+      'previewPublications'
+    )
+    .textContent =
+      getValue('publications') ||
+      'None';
+
+
+  renderPreviewMembers();
+
+
+  document
+    .getElementById(
+      'verificationBadge'
+    )
+    .textContent =
+      'Unverified';
+
+
+  document
+    .getElementById(
+      'verificationBadge'
+    )
+    .classList
+    .remove('verified');
+
+}
+
+
+/*******************************************************
+ * PREVIEW MEMBER TABLE
+ *******************************************************/
+
+function renderPreviewMembers() {
+
+  const body =
+    document.getElementById(
+      'previewMemberTable'
+    );
+
+
+  body.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const row =
+        document.createElement(
+          'tr'
+        );
+
+
+      row.innerHTML = `
+
+        <td>
+          ${index + 1}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.fullName
+          )}
+        </td>
+
+        <td>
+          ${formatDate(
+            member.dateOfBirth
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.relation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.occupation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            buildLocation(member)
+          )}
+        </td>
+
+      `;
+
+
+      body.appendChild(row);
+
+    }
+  );
+
+
+  renderDetailedPreview();
+
+}
+
+
+/*******************************************************
+ * DETAILED PREVIEW
+ *******************************************************/
+
+function renderDetailedPreview() {
+
+  const container =
+    document.getElementById(
+      'detailedPreview'
+    );
+
+
+  container.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const card =
+        document.createElement(
+          'div'
+        );
+
+
+      card.className =
+        'detail-card';
+
+
+      card.innerHTML = `
+
+        <div class="detail-title">
+
+          ${index + 1}.
+          ${escapeHtml(member.fullName)}
+
+          ${
+            member.isHead
+            ?
+            ' — SELF'
+            :
+            ''
+          }
+
+        </div>
+
+
+        <div class="detail-grid">
+
+
+          ${detailItem(
+            'Current Status',
+            member.currentStatus
+          )}
+
+
+          ${detailItem(
+            'Date',
+            formatDate(member.date)
+          )}
+
+
+          ${detailItem(
+            'Qualification',
+            member.qualification
+          )}
+
+
+          ${detailItem(
+            'Occupation',
+            member.occupation
+          )}
+
+
+          ${detailItem(
+            'Location',
+            buildFullLocation(member)
+          )}
+
+
+          ${detailItem(
+            'Health Condition',
+            member.healthCondition
+          )}
+
+
+          ${detailItem(
+            'Practicing Catholic',
+            member.practicingCatholic
+          )}
+
+
+          ${detailItem(
+            'Church Activities',
+            member.churchActivities
+          )}
+
+
+          ${detailItem(
+            'Relation with Head',
+            member.relation
+          )}
+
+
+        </div>
+
+      `;
+
+
+      container.appendChild(card);
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * DETAIL ITEM
+ *******************************************************/
+
+function detailItem(label, value) {
+
+  return `
+
+    <div class="detail-item">
+
+      <label>
+        ${escapeHtml(label)}
+      </label>
+
+      <span>
+        ${escapeHtml(
+          value || '—'
+        )}
+      </span>
+
+    </div>
+
+  `;
+
+}
+
+
+/*******************************************************
+ * VERIFY AND SUBMIT
+ *******************************************************/
+
+function verifyAndSubmit() {
+
+  if (
+    !validatePage(1) ||
+    !validatePage(2) ||
+    !validatePage(3)
+  ) {
+
+    return;
+
+  }
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  /*
+   * Final client-side validation.
+   */
+
+  for (
+    let i = 0;
+    i < allMembers.length;
+    i++
+  ) {
+
+    const member =
+      allMembers[i];
+
+
+    const requiredFields = [
+
+      ['fullName', 'Full Name'],
+
+      ['dateOfBirth', 'Date of Birth'],
+
+      ['currentStatus', 'Current Status'],
+
+      ['qualification', 'Qualification'],
+
+      ['occupation', 'Occupation'],
+
+      ['country', 'Country'],
+
+      ['state', 'State'],
+
+      ['city', 'City'],
+
+      ['healthCondition', 'Health Condition'],
+
+      ['practicingCatholic', 'Practicing Catholic'],
+
+      ['churchActivities', 'Church Activities'],
+
+      ['relation', 'Relation with Head']
+
+    ];
+
+
+    for (
+      let j = 0;
+      j < requiredFields.length;
+      j++
+    ) {
+
+      const key =
+        requiredFields[j][0];
+
+
+      const label =
+        requiredFields[j][1];
+
+
+      if (
+        !member[key] ||
+        String(member[key]).trim() === ''
+      ) {
+
+        alert(
+          label +
+          ' is required for family member ' +
+          (i + 1) +
+          '.'
+        );
+
+        return;
+
+      }
+
+    }
+
+  }
+
+
+  /*
+   * Show verified state.
+   */
+
+  const badge =
+    document.getElementById(
+      'verificationBadge'
+    );
+
+
+  badge.textContent =
+    'Verified';
+
+
+  badge.classList.add(
+    'verified'
+  );
+
+
+  /*
+   * Confirm.
+   */
+
+  const confirmed =
+    confirm(
+      'Please confirm that all the information is correct.\n\n' +
+      'Click OK to submit this family.'
+    );
+
+
+  if (!confirmed) {
+
+    return;
+
+  }
+
+
+  const data =
+    collectFamilyData();
+
+
+  setLoading(true);
+
+
+  document
+    .getElementById(
+      'submitButton'
+    )
+    .disabled = true;
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        setLoading(false);
+
+        document
+          .getElementById(
+            'submitButton'
+          )
+          .disabled = false;
+
+
+        showSuccess(result);
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        setLoading(false);
+
+        document
+          .getElementById(
+            'submitButton'
+          )
+          .disabled = false;
+
+
+        alert(
+          'Unable to save information.\n\n' +
+          error.message
+        );
+
+      }
+    )
+
+    .saveFamily(data);
+
+}
+
+
+/*******************************************************
+ * COLLECT COMPLETE FAMILY DATA
+ *******************************************************/
+
+function collectFamilyData() {
+
+  return {
+
+    parishName:
+      getValue('parishName'),
+
+    parishWard:
+      getValue('parishWard'),
+
+    houseName:
+      getValue('houseName'),
+
+    headName:
+      getValue('headName'),
+
+    mobile:
+      getValue('mobile'),
+
+    email:
+      getValue('email'),
+
+    address:
+      getValue('address'),
+
+    pinCode:
+      getValue('pinCode'),
+
+    residenceYears:
+      getValue('residenceYears'),
+
+    economicStatus:
+      getValue('economicStatus'),
+
+    publications:
+      getValue('publications'),
+
+
+    members:
+      getAllMembers()
+
+  };
+
+}
+
+
+/*******************************************************
+ * SUCCESS
+ *******************************************************/
+
+function showSuccess(result) {
+
+  document
+    .getElementById(
+      'successFamilyId'
+    )
+    .textContent =
+      result.familyId;
+
+
+  document
+    .getElementById(
+      'successMembers'
+    )
+    .textContent =
+      result.memberCount +
+      ' family member(s) saved.';
+
+
+  document
+    .getElementById(
+      'successModal'
+    )
+    .classList
+    .remove('hidden');
+
+}
+
+
+/*******************************************************
+ * START NEW FAMILY
+ *******************************************************/
+
+function startNewFamily() {
+
+  document
+    .getElementById(
+      'successModal'
+    )
+    .classList
+    .add('hidden');
+
+
+  /*
+   * Reset all standard fields.
+   */
+
+  document
+    .querySelectorAll(
+      'input, textarea'
+    )
+    .forEach(
+      function(input) {
+
+        if (
+          !input.readOnly
+        ) {
+
+          input.value = '';
+
+        }
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      'select'
+    )
+    .forEach(
+      function(select) {
+
+        select.selectedIndex = 0;
+
+      }
+    );
+
+
+  /*
+   * Restore defaults.
+   */
+
+  document
+    .getElementById(
+      'parishName'
+    )
+    .value =
+      settings.parishName;
+
+
+  additionalMembers = [];
+
+
+  currentPage = 1;
+
+
+  showPage(1);
+
+}
+
+
+/*******************************************************
+ * SET LOADING
+ *******************************************************/
+
+function setLoading(show) {
+
+  const loading =
+    document.getElementById(
+      'loading'
+    );
+
+
+  if (show) {
+
+    loading.classList.remove(
+      'hidden'
+    );
+
+  } else {
+
+    loading.classList.add(
+      'hidden'
+    );
+
+  }
+
+}
+
+
+/*******************************************************
+ * GET VALUE
+ *******************************************************/
+
+function getValue(id) {
+
+  const element =
+    document.getElementById(id);
+
+
+  if (!element) {
+
+    return '';
+
+  }
+
+
+  return String(
+    element.value || ''
+  ).trim();
+
+}
+
+
+/*******************************************************
+ * BUILD LOCATION
+ *******************************************************/
+
+function buildLocation(member) {
+
+  const parts = [];
+
+
+  if (member.city) {
+
+    parts.push(
+      member.city
+    );
+
+  }
+
+
+  if (member.state) {
+
+    parts.push(
+      member.state
+    );
+
+  }
+
+
+  return parts.join(', ');
+
+}
+
+
+/*******************************************************
+ * BUILD FULL LOCATION
+ *******************************************************/
+
+function buildFullLocation(member) {
+
+  const parts = [];
+
+
+  if (member.city) {
+
+    parts.push(
+      member.city
+    );
+
+  }
+
+
+  if (member.state) {
+
+    parts.push(
+      member.state
+    );
+
+  }
+
+
+  if (member.country) {
+
+    parts.push(
+      member.country
+    );
+
+  }
+
+
+  return parts.join(', ');
+
+}
+
+
+/*******************************************************
+ * DATE FORMAT
+ *******************************************************/
+
+function formatDate(value) {
+
+  if (!value) {
+
+    return '—';
+
+  }
+
+
+  const parts =
+    value.split('-');
+
+
+  if (
+    parts.length !== 3
+  ) {
+
+    return value;
+
+  }
+
+
+  return (
+    parts[2] +
+    '-' +
+    parts[1] +
+    '-' +
+    parts[0]
+  );
+
+}
+
+
+/*******************************************************
+ * ESCAPE HTML
+ *******************************************************/
+
+function escapeHtml(value) {
+
+  if (
+    value === undefined ||
+    value === null
+  ) {
+
+    return '';
+
+  }
+
+
+  return String(value)
+
+    .replace(/&/g, '&amp;')
+
+    .replace(/</g, '&lt;')
+
+    .replace(/>/g, '&gt;')
+
+    .replace(/"/g, '&quot;')
+
+    .replace(/'/g, '&#039;');
+
+}
+
+
+/*******************************************************
+ * ESCAPE ATTRIBUTE
+ *******************************************************/
+
+function escapeAttribute(value) {
+
+  return escapeHtml(value);
+
+}
+
+
+/*******************************************************
+ * OPTIONS
+ *******************************************************/
+
+function option(selected, value) {
+
+  return `
+
+    <option
+      value="${escapeAttribute(value)}"
+      ${selected === value ? 'selected' : ''}>
+
+      ${escapeHtml(value)}
+
+    </option>
+
+  `;
+
+}
+
+
+function statusOptions(selected) {
+
+  const values = [
+
+    'Married',
+    'Unmarried',
+    'Divorced',
+    'Priesthood',
+    'Consecrated Life'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function qualificationOptions(selected) {
+
+  const values = [
+
+    'Student',
+    'Below SSLC',
+    'SSLC',
+    'Pre Degree / + 2',
+    'Graduate',
+    'Post Graduate',
+    'PhD'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function occupationOptions(selected) {
+
+  const values = [
+
+    'Unemployed',
+    'Employed',
+    'Housewife',
+    'Business',
+    'Farmer',
+    'Self Employed'
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function countryOptions(selected) {
+
+  const values = [
+
+    'India',
+    'United Arab Emirates',
+    'Saudi Arabia',
+    'Qatar',
+    'Oman',
+    'Kuwait',
+    'Bahrain',
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'Other'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function stateOptions(selected) {
+
+  const values = [
+
+    'Kerala',
+    'Tamil Nadu',
+    'Karnataka',
+    'Maharashtra',
+    'Delhi',
+    'Other'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function healthOptions(selected) {
+
+  const values = [
+
+    
+    'Sick',
+    'Bedridden',
+    'Healthy',
+    'Other'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function yesNoOptions(selected) {
+
+  const values = [
+
+    'Yes',
+    'No'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function churchActivityOptions(selected) {
+
+  const values = [
+
+    'Mission League',
+    'Vincent de Paul',
+    'KCYM',
+    'Nothing as Regular',
+    'Catholic Congress',
+    'DFC',
+    'KLM',
+    'Prayer Group',
+    'Parish Counsellor',
+    'Pithruvedhi',
+    'Mathruvedhi',
+    'Altar Boys',
+    'Catechists',
+    'Jesus Youth'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function relationOptions(selected) {
+
+  const values = [
+
+    'Brother',
+    'Daughter',
+    'Daughter in Law',
+    'Father',
+    'Sister',
+    'Grand Father',
+    'Grand Mother',
+    'Grand Son',
+    'Grand Daughter',
+    'Husband',
+    'Mother',
+    'Wife',
+    'Son',
+    'Son in Law',
+    'Father-in-law',
+    'Mother-in-law',
+    'Brother-in-law',
+    'Sister-in-law'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+</script>

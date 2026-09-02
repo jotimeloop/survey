@@ -1,0 +1,4758 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <style>
+
+/*******************************************************
+ * RESET
+ *******************************************************/
+
+* {
+  box-sizing: border-box;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+
+  margin: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background: #f4f6fb;
+
+  color: #07135c;
+
+  font-size: 14px;
+
+}
+
+
+/*******************************************************
+ * APPLICATION
+ *******************************************************/
+
+.app {
+
+  min-height: 100vh;
+
+}
+
+
+/*******************************************************
+ * HEADER
+ *******************************************************/
+
+.top-header {
+
+  background: white;
+
+  padding: 20px 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e7e9f0;
+
+}
+
+
+.small-title {
+
+  color: #263b8f;
+
+  font-size: 13px;
+
+  margin-bottom: 3px;
+
+}
+
+
+.top-header h1 {
+
+  margin: 0;
+
+  font-size: 22px;
+
+  color: #06115c;
+
+}
+
+
+.progress-area {
+
+  width: 220px;
+
+  text-align: right;
+
+  color: #555;
+
+  font-size: 12px;
+
+}
+
+
+.progress-bar {
+
+  height: 5px;
+
+  background: #e4e6ee;
+
+  border-radius: 10px;
+
+  margin-top: 6px;
+
+  overflow: hidden;
+
+}
+
+
+.progress-fill {
+
+  height: 100%;
+
+  width: 25%;
+
+  background: #f5a800;
+
+  transition: width .3s ease;
+
+}
+
+
+/*******************************************************
+ * MAIN CONTAINER
+ *******************************************************/
+
+.container {
+
+  width: min(1450px, calc(100% - 20px));
+
+  margin: 10px auto 30px;
+
+}
+
+
+/*******************************************************
+ * PAGE
+ *******************************************************/
+
+.page {
+
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 20px 24px 16px;
+
+  box-shadow:
+    0 1px 8px rgba(0,0,0,.08);
+
+  display: none;
+
+}
+
+
+.page.active {
+
+  display: block;
+
+}
+
+
+/*******************************************************
+ * PAGE HEADING
+ *******************************************************/
+
+.page-heading {
+
+  margin-bottom: 25px;
+
+}
+
+
+.page-category {
+
+  color: #263b8f;
+
+  font-size: 13px;
+
+}
+
+
+.page-heading h2 {
+
+  margin: 2px 0 0;
+
+  color: #06115c;
+
+  font-size: 19px;
+
+}
+
+
+/*******************************************************
+ * FORM GRID
+ *******************************************************/
+
+.form-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  column-gap: 28px;
+
+  row-gap: 15px;
+
+}
+
+
+.field {
+
+  min-width: 0;
+
+}
+
+
+.field-wide {
+
+  grid-column: 1 / -1;
+
+}
+
+
+.field label {
+
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-weight: 700;
+
+  color: #07135c;
+
+  font-size: 13px;
+
+}
+
+
+.field label span {
+
+  color: #e51c23;
+
+}
+
+
+.field label small {
+
+  font-weight: normal;
+
+  font-size: 11px;
+
+}
+
+
+input,
+select,
+textarea {
+
+  width: 100%;
+
+  border: 1px solid #d5d7dd;
+
+  border-radius: 7px;
+
+  background: white;
+
+  padding: 11px 14px;
+
+  font-size: 14px;
+
+  color: #111;
+
+  font-family: inherit;
+
+  transition:
+    border-color .2s,
+    box-shadow .2s;
+
+}
+
+
+input,
+select {
+
+  height: 42px;
+
+}
+
+
+textarea {
+
+  resize: vertical;
+
+  min-height: 90px;
+
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+
+  outline: none;
+
+  border-color: #527de8;
+
+  box-shadow:
+    0 0 0 2px rgba(82,125,232,.12);
+
+}
+
+
+input[readonly] {
+
+  background: #f6f7fa;
+
+}
+
+
+/*******************************************************
+ * NAVIGATION
+ *******************************************************/
+
+.navigation {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-top: 28px;
+
+}
+
+
+.navigation.right {
+
+  justify-content: flex-end;
+
+}
+
+
+/*******************************************************
+ * BUTTONS
+ *******************************************************/
+
+.btn {
+
+  border: 1px solid #111;
+
+  background: white;
+
+  border-radius: 10px;
+
+  padding: 10px 18px;
+
+  min-height: 40px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  transition:
+    transform .1s,
+    background .2s;
+
+}
+
+
+.btn:hover {
+
+  transform: translateY(-1px);
+
+}
+
+
+.btn.primary {
+
+  background: white;
+
+  color: #07135c;
+
+}
+
+
+.btn.primary:hover {
+
+  background: #f5f6fa;
+
+}
+
+
+.btn.secondary {
+
+  background: white;
+
+}
+
+
+.btn.add {
+
+  padding: 9px 16px;
+
+  border-radius: 8px;
+
+}
+
+
+.btn.verify {
+
+  background: #f6a800;
+
+  border-color: #f6a800;
+
+  color: #111;
+
+  font-weight: 700;
+
+}
+
+
+.btn.verify:hover {
+
+  background: #e99d00;
+
+}
+
+
+/*******************************************************
+ * INFO MESSAGE
+ *******************************************************/
+
+.info-message {
+
+  background: #f5f7ff;
+
+  border-left: 4px solid #4059a9;
+
+  padding: 12px 15px;
+
+  border-radius: 5px;
+
+  margin-bottom: 18px;
+
+  color: #333;
+
+}
+
+
+/*******************************************************
+ * MEMBER FORM
+ *******************************************************/
+
+.member-card {
+
+  border: 1px solid #dfe1e8;
+
+  border-radius: 10px;
+
+  padding: 18px;
+
+  margin-bottom: 16px;
+
+  background: #fcfcfe;
+
+}
+
+
+.member-card h3 {
+
+  margin: 0 0 17px;
+
+  color: #07135c;
+
+  font-size: 16px;
+
+}
+
+
+.member-card.self {
+
+  border-left: 4px solid #536dce;
+
+}
+
+
+.self-label {
+
+  display: inline-block;
+
+  margin-left: 8px;
+
+  padding: 3px 8px;
+
+  border-radius: 10px;
+
+  background: #e8edff;
+
+  color: #344b9c;
+
+  font-size: 11px;
+
+}
+
+
+/*******************************************************
+ * ADD MEMBER
+ *******************************************************/
+
+.add-member-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin: 10px 0 18px;
+
+}
+
+
+#memberCount {
+
+  color: #666;
+
+  font-size: 13px;
+
+}
+
+
+.btn.add:disabled {
+
+  opacity: .45;
+
+  cursor: not-allowed;
+
+}
+
+
+/*******************************************************
+ * TABLE
+ *******************************************************/
+
+.table-wrapper {
+
+  width: 100%;
+
+  overflow-x: auto;
+
+  border: 1px solid #e2e3e8;
+
+  border-radius: 4px;
+
+}
+
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 750px;
+
+}
+
+
+th {
+
+  background: #f5f1fc;
+
+  color: #e6a000;
+
+  font-weight: 700;
+
+  text-align: left;
+
+  padding: 11px 10px;
+
+  border-bottom: 1px solid #ddd;
+
+  font-size: 12px;
+
+}
+
+
+td {
+
+  padding: 10px;
+
+  border-bottom: 1px solid #eee;
+
+  color: #24326e;
+
+  font-size: 13px;
+
+}
+
+
+tbody tr:last-child td {
+
+  border-bottom: none;
+
+}
+
+
+.action-button {
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+}
+
+
+.delete-button {
+
+  color: #b40000;
+
+}
+
+
+/*******************************************************
+ * PREVIEW
+ *******************************************************/
+
+.preview-heading {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+
+.badge {
+
+  border: 1px solid #ff3b3b;
+
+  color: #ff3b3b;
+
+  border-radius: 20px;
+
+  padding: 5px 12px;
+
+  font-size: 12px;
+
+}
+
+
+.badge.verified {
+
+  color: #16803c;
+
+  border-color: #16803c;
+
+}
+
+
+.preview-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 1px;
+
+  background: #ddd;
+
+  border: 1px solid #ddd;
+
+  margin-bottom: 25px;
+
+}
+
+
+.preview-item {
+
+  background: #fafaff;
+
+  padding: 12px 15px;
+
+  min-height: 55px;
+
+}
+
+
+.preview-item label {
+
+  display: block;
+
+  font-weight: 700;
+
+  color: #27356d;
+
+  font-size: 12px;
+
+  margin-bottom: 6px;
+
+}
+
+
+.preview-item div {
+
+  color: #334583;
+
+}
+
+
+.preview-title {
+
+  color: #07135c;
+
+  font-size: 17px;
+
+  margin: 20px 0 12px;
+
+}
+
+
+/*******************************************************
+ * DETAILED PREVIEW
+ *******************************************************/
+
+.detail-card {
+
+  border: 1px solid #ddd;
+
+  margin-top: 12px;
+
+}
+
+
+.detail-title {
+
+  background: #f8f5ff;
+
+  padding: 11px;
+
+  font-weight: 700;
+
+  color: #07135c;
+
+}
+
+
+.detail-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+}
+
+
+.detail-item {
+
+  padding: 10px;
+
+  border-top: 1px solid #eee;
+
+  border-right: 1px solid #eee;
+
+}
+
+
+.detail-item label {
+
+  display: inline-block;
+
+  min-width: 45%;
+
+  font-weight: 700;
+
+  color: #37457c;
+
+}
+
+
+.detail-item span {
+
+  color: #344583;
+
+}
+
+
+/*******************************************************
+ * LOADING
+ *******************************************************/
+
+.overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(255,255,255,.85);
+
+  z-index: 5000;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 15px;
+
+}
+
+
+.loader {
+
+  width: 42px;
+
+  height: 42px;
+
+  border: 4px solid #ddd;
+
+  border-top-color: #4059a9;
+
+  border-radius: 50%;
+
+  animation:
+    spin .8s linear infinite;
+
+}
+
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/*******************************************************
+ * SUCCESS MODAL
+ *******************************************************/
+
+.modal {
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.45);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 20px;
+
+  z-index: 6000;
+
+}
+
+
+.modal-box {
+
+  width: min(450px, 100%);
+
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 35px;
+
+  text-align: center;
+
+}
+
+
+.success-icon {
+
+  width: 65px;
+
+  height: 65px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  background: #e6f4ea;
+
+  color: #188038;
+
+  font-size: 36px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-weight: bold;
+
+}
+
+
+.modal-box h2 {
+
+  color: #07135c;
+
+}
+
+
+.family-id {
+
+  background: #f3f4f7;
+
+  border-radius: 8px;
+
+  padding: 15px;
+
+  margin: 20px 0;
+
+}
+
+
+.family-id span {
+
+  display: block;
+
+  font-size: 12px;
+
+  color: #666;
+
+}
+
+
+.family-id strong {
+
+  display: block;
+
+  color: #263b8f;
+
+  font-size: 22px;
+
+  margin-top: 5px;
+
+}
+
+
+/*******************************************************
+ * HIDDEN
+ *******************************************************/
+
+.hidden {
+
+  display: none !important;
+
+}
+
+
+/*******************************************************
+ * MOBILE
+ *******************************************************/
+
+@media (max-width: 750px) {
+
+  .top-header {
+
+    padding: 16px;
+
+    display: block;
+
+  }
+
+
+  .progress-area {
+
+    width: 100%;
+
+    text-align: left;
+
+    margin-top: 12px;
+
+  }
+
+
+  .container {
+
+    width: calc(100% - 10px);
+
+    margin-top: 5px;
+
+  }
+
+
+  .page {
+
+    padding: 18px 14px;
+
+  }
+
+
+  .form-grid {
+
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+
+  }
+
+
+  .field-wide {
+
+    grid-column: auto;
+
+  }
+
+
+  .navigation {
+
+    gap: 10px;
+
+  }
+
+
+  .navigation .btn {
+
+    flex: 1;
+
+  }
+
+
+  .preview-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .detail-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .detail-item {
+
+    border-right: none;
+
+  }
+
+
+  .add-member-row {
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+  }
+
+
+  #memberCount {
+
+    text-align: center;
+
+  }
+
+}
+
+</style>
+<script>
+
+/*******************************************************
+ * APPLICATION STATE
+ *******************************************************/
+
+let currentPage = 1;
+
+let settings = {
+
+  parishName:
+    'Chalassery, St.Pius X Church',
+
+  wards: [],
+
+  maxMembers: 20
+
+};
+
+
+/*
+ * The head is always member #1.
+ * Additional members are stored here.
+ */
+
+let additionalMembers = [];
+
+
+/*******************************************************
+ * INITIALIZATION
+ *******************************************************/
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function() {
+
+    loadSettings();
+
+    setupInputRestrictions();
+
+    syncHeadName();
+
+  }
+);
+
+
+/*******************************************************
+ * LOAD SETTINGS FROM GOOGLE SHEETS
+ *******************************************************/
+
+function loadSettings() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        settings = result;
+
+
+        document
+          .getElementById('parishName')
+          .value =
+            settings.parishName;
+
+
+        populateWards(
+          settings.wards
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        console.error(error);
+
+        document
+          .getElementById('parishName')
+          .value =
+            'Chalassery, St.Pius X Church';
+
+      }
+    )
+
+    .getSettings();
+
+}
+
+
+/*******************************************************
+ * POPULATE PARISH WARDS
+ *******************************************************/
+
+function populateWards(wards) {
+
+  const select =
+    document.getElementById(
+      'parishWard'
+    );
+
+
+  select.innerHTML = `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  `;
+
+
+  wards.forEach(
+    function(ward) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+
+      option.value = ward;
+
+      option.textContent = ward;
+
+
+      select.appendChild(option);
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * INPUT RESTRICTIONS
+ *******************************************************/
+
+function setupInputRestrictions() {
+
+  const mobile =
+    document.getElementById(
+      'mobile'
+    );
+
+
+  mobile.addEventListener(
+    'input',
+    function() {
+
+      this.value =
+        this.value
+          .replace(/\D/g, '')
+          .substring(0, 10);
+
+    }
+  );
+
+
+  const pin =
+    document.getElementById(
+      'pinCode'
+    );
+
+
+  pin.addEventListener(
+    'input',
+    function() {
+
+      this.value =
+        this.value
+          .replace(/\D/g, '')
+          .substring(0, 6);
+
+    }
+  );
+
+
+  document
+    .getElementById('headName')
+    .addEventListener(
+      'input',
+      syncHeadName
+    );
+
+
+  document
+    .getElementById('headFullName')
+    .addEventListener(
+      'input',
+      syncHeadName
+    );
+
+}
+
+
+/*******************************************************
+ * SYNC HEAD NAME
+ *******************************************************/
+
+function syncHeadName() {
+
+  const page1Name =
+    document
+      .getElementById('headName')
+      .value;
+
+
+  const page2Name =
+    document
+      .getElementById('headFullName');
+
+
+  /*
+   * Only automatically copy when
+   * Page 2 has not been manually changed.
+   */
+
+  if (
+    page2Name &&
+    (
+      page2Name.value === '' ||
+      page2Name.dataset.auto === 'true'
+    )
+  ) {
+
+    page2Name.value =
+      page1Name;
+
+    page2Name.dataset.auto =
+      'true';
+
+  }
+
+}
+
+
+/*******************************************************
+ * GO TO PAGE
+ *******************************************************/
+
+function goToPage(pageNumber) {
+
+  /*
+   * Validate before moving forward.
+   */
+
+  if (
+    pageNumber > currentPage
+  ) {
+
+    if (
+      !validatePage(
+        currentPage
+      )
+    ) {
+
+      return;
+
+    }
+
+  }
+
+
+  /*
+   * Special handling when
+   * entering Page 3.
+   */
+
+  if (pageNumber === 3) {
+
+    initializeMembers();
+
+  }
+
+
+  /*
+   * Special handling when
+   * entering Page 4.
+   */
+
+  if (pageNumber === 4) {
+
+    if (
+      !validatePage(3)
+    ) {
+
+      return;
+
+    }
+
+
+    buildPreview();
+
+  }
+
+
+  showPage(pageNumber);
+
+}
+
+
+/*******************************************************
+ * SHOW PAGE
+ *******************************************************/
+
+function showPage(pageNumber) {
+
+  document
+    .querySelectorAll('.page')
+    .forEach(
+      function(page) {
+
+        page.classList.remove(
+          'active'
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      'page' + pageNumber
+    )
+    .classList.add('active');
+
+
+  currentPage =
+    pageNumber;
+
+
+  const percentage =
+    pageNumber * 25;
+
+
+  document
+    .getElementById(
+      'progressFill'
+    )
+    .style.width =
+      percentage + '%';
+
+
+  document
+    .getElementById(
+      'progressText'
+    )
+    .textContent =
+      'Page ' +
+      pageNumber +
+      ' of 4';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/*******************************************************
+ * VALIDATE PAGE
+ *******************************************************/
+
+function validatePage(pageNumber) {
+
+  const page =
+    document.getElementById(
+      'page' + pageNumber
+    );
+
+
+  const inputs =
+    page.querySelectorAll(
+      'input, select, textarea'
+    );
+
+
+  for (
+    let i = 0;
+    i < inputs.length;
+    i++
+  ) {
+
+    const input =
+      inputs[i];
+
+
+    if (
+      !input.checkValidity()
+    ) {
+
+      input.reportValidity();
+
+      input.focus();
+
+      return false;
+
+    }
+
+  }
+
+
+  /*
+   * Extra validation for Page 1
+   */
+
+  if (pageNumber === 1) {
+
+    const mobile =
+      document
+        .getElementById('mobile')
+        .value
+        .trim();
+
+
+    if (
+      !/^[0-9]{10}$/.test(mobile)
+    ) {
+
+      alert(
+        'Please enter a valid 10-digit mobile number.'
+      );
+
+      document
+        .getElementById('mobile')
+        .focus();
+
+      return false;
+
+    }
+
+
+    const pin =
+      document
+        .getElementById('pinCode')
+        .value
+        .trim();
+
+
+    if (
+      !/^[0-9]{6}$/.test(pin)
+    ) {
+
+      alert(
+        'Please enter a valid 6-digit PIN Code.'
+      );
+
+      document
+        .getElementById('pinCode')
+        .focus();
+
+      return false;
+
+    }
+
+  }
+
+
+  /*
+   * Page 3
+   */
+
+  if (pageNumber === 3) {
+
+    if (
+      getAllMembers().length < 1
+    ) {
+
+      alert(
+        'Family head information is required.'
+      );
+
+      return false;
+
+    }
+
+  }
+
+
+  return true;
+
+}
+
+
+/*******************************************************
+ * INITIALIZE MEMBERS
+ *******************************************************/
+
+function initializeMembers() {
+
+  /*
+   * We don't need to create the head
+   * in additionalMembers because the
+   * head is always generated from Page 2.
+   */
+
+  renderMemberPage();
+
+}
+
+
+/*******************************************************
+ * CREATE HEAD MEMBER
+ *******************************************************/
+
+function getHeadMember() {
+
+  return {
+
+    isHead: true,
+
+    fullName:
+      getValue('headFullName'),
+
+    dateOfBirth:
+      getValue('headDOB'),
+
+    relation:
+      'SELF',
+
+    currentStatus:
+      getValue('headStatus'),
+
+    date:
+      getValue('headDate'),
+
+    qualification:
+      getValue('headQualification'),
+
+    occupation:
+      getValue('headOccupation'),
+
+    country:
+      getValue('headCountry'),
+
+    state:
+      getValue('headState'),
+
+    city:
+      getValue('headCity'),
+
+    healthCondition:
+      getValue('headHealth'),
+
+    practicingCatholic:
+      getValue('headCatholic'),
+
+    churchActivities:
+      getValue('headChurchActivity')
+
+  };
+
+}
+
+
+/*******************************************************
+ * GET ALL MEMBERS
+ *******************************************************/
+
+function getAllMembers() {
+
+  const head =
+    getHeadMember();
+
+
+  return [
+    head,
+    ...additionalMembers
+  ];
+
+}
+
+
+/*******************************************************
+ * ADD FAMILY MEMBER
+ *******************************************************/
+
+function addFamilyMember() {
+
+  const total =
+    getAllMembers().length;
+
+
+  if (
+    total >= settings.maxMembers
+  ) {
+
+    alert(
+      'Maximum ' +
+      settings.maxMembers +
+      ' family members are allowed.'
+    );
+
+    return;
+
+  }
+
+
+  additionalMembers.push({
+
+    isHead: false,
+
+    fullName: '',
+
+    dateOfBirth: '',
+
+    relation: '',
+
+    currentStatus: '',
+
+    date: '',
+
+    qualification: '',
+
+    occupation: '',
+
+    country: 'India',
+
+    state: 'Kerala',
+
+    city: '',
+
+    healthCondition: '',
+
+    practicingCatholic: '',
+
+    churchActivities: ''
+
+  });
+
+
+  renderMemberPage();
+
+
+  /*
+   * Scroll to the newly added member.
+   */
+
+  setTimeout(
+    function() {
+
+      const cards =
+        document.querySelectorAll(
+          '.member-card'
+        );
+
+
+      if (cards.length > 0) {
+
+        cards[
+          cards.length - 1
+        ].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+
+      }
+
+    },
+    100
+  );
+
+}
+
+
+/*******************************************************
+ * REMOVE MEMBER
+ *******************************************************/
+
+function removeMember(index) {
+
+  /*
+   * index 0 is the head.
+   */
+
+  if (index === 0) {
+
+    alert(
+      'The Head of Family cannot be removed.'
+    );
+
+    return;
+
+  }
+
+
+  const additionalIndex =
+    index - 1;
+
+
+  if (
+    !confirm(
+      'Remove this family member?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  additionalMembers.splice(
+    additionalIndex,
+    1
+  );
+
+
+  renderMemberPage();
+
+}
+
+
+/*******************************************************
+ * RENDER MEMBER PAGE
+ *******************************************************/
+
+function renderMemberPage() {
+
+  const container =
+    document.getElementById(
+      'memberFormArea'
+    );
+
+
+  container.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const card =
+        document.createElement(
+          'div'
+        );
+
+
+      card.className =
+        'member-card' +
+        (
+          member.isHead
+          ? ' self'
+          : ''
+        );
+
+
+      const title =
+        member.isHead
+        ? `
+          Family Member ${index + 1}
+          <span class="self-label">
+            SELF
+          </span>
+        `
+        : `
+          Family Member ${index + 1}
+        `;
+
+
+      const removeButton =
+        member.isHead
+        ? ''
+        : `
+          <button
+            type="button"
+            class="action-button delete-button"
+            onclick="removeMember(${index})">
+
+            🗑
+
+          </button>
+        `;
+
+
+      card.innerHTML = `
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+          ">
+
+          <h3>
+            ${title}
+          </h3>
+
+          ${removeButton}
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- FULL NAME -->
+
+          <div class="field">
+
+            <label>
+              Full Name <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              class="member-input"
+              data-index="${index}"
+              data-field="fullName"
+              value="${escapeAttribute(member.fullName)}"
+              ${member.isHead ? 'readonly' : ''}
+              required>
+
+          </div>
+
+
+          <!-- DOB -->
+
+          <div class="field">
+
+            <label>
+              Date of Birth <span>*</span>
+            </label>
+
+            <input
+              type="date"
+              class="member-input"
+              data-index="${index}"
+              data-field="dateOfBirth"
+              value="${escapeAttribute(member.dateOfBirth)}"
+              ${member.isHead ? 'readonly' : ''}
+              required>
+
+          </div>
+
+
+          <!-- STATUS -->
+
+          <div class="field">
+
+            <label>
+              Current Status <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="currentStatus"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${statusOptions(
+                member.currentStatus
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- DATE -->
+
+          <div class="field">
+
+            <label>
+              Date
+            </label>
+
+            <input
+              type="date"
+              class="member-input"
+              data-index="${index}"
+              data-field="date"
+              value="${escapeAttribute(member.date)}"
+              ${member.isHead ? 'readonly' : ''}>
+
+          </div>
+
+
+          <!-- QUALIFICATION -->
+
+          <div class="field">
+
+            <label>
+              Qualification <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="qualification"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${qualificationOptions(
+                member.qualification
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- OCCUPATION -->
+
+          <div class="field">
+
+            <label>
+              Occupation <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="occupation"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${occupationOptions(
+                member.occupation
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- COUNTRY -->
+
+          <div class="field">
+
+            <label>
+              Country <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="country"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${countryOptions(
+                member.country
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- STATE -->
+
+          <div class="field">
+
+            <label>
+              State <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="state"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${stateOptions(
+                member.state
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- CITY -->
+
+          <div class="field">
+
+            <label>
+              City <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              class="member-input"
+              data-index="${index}"
+              data-field="city"
+              value="${escapeAttribute(member.city)}"
+              ${member.isHead ? 'readonly' : ''}
+              required>
+
+          </div>
+
+
+          <!-- HEALTH -->
+
+          <div class="field">
+
+            <label>
+              Health condition <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="healthCondition"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${healthOptions(
+                member.healthCondition
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- CATHOLIC -->
+
+          <div class="field">
+
+            <label>
+              Are you a Practicing Catholic?
+              <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="practicingCatholic"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${yesNoOptions(
+                member.practicingCatholic
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- CHURCH ACTIVITIES -->
+
+          <div class="field">
+
+            <label>
+              Are you active in any of the
+              Church Activities?
+              <span>*</span>
+            </label>
+
+            <select
+              class="member-input"
+              data-index="${index}"
+              data-field="churchActivities"
+              ${member.isHead ? 'disabled' : ''}
+              required>
+
+              ${churchActivityOptions(
+                member.churchActivities
+              )}
+
+            </select>
+
+          </div>
+
+
+          <!-- RELATION -->
+
+          <div class="field">
+
+            <label>
+              Relation with Head of Family
+              <span>*</span>
+            </label>
+
+            ${
+              member.isHead
+              ?
+              `
+                <input
+                  type="text"
+                  value="SELF"
+                  readonly>
+              `
+              :
+              `
+                <select
+                  class="member-input"
+                  data-index="${index}"
+                  data-field="relation"
+                  required>
+
+                  ${relationOptions(
+                    member.relation
+                  )}
+
+                </select>
+              `
+            }
+
+          </div>
+
+
+        </div>
+
+      `;
+
+
+      container.appendChild(card);
+
+    }
+  );
+
+
+  /*
+   * Attach change events.
+   */
+
+  container
+    .querySelectorAll(
+      '.member-input'
+    )
+    .forEach(
+      function(input) {
+
+        input.addEventListener(
+          'input',
+          memberInputChanged
+        );
+
+
+        input.addEventListener(
+          'change',
+          memberInputChanged
+        );
+
+      }
+    );
+
+
+  updateMemberCounter();
+
+  renderMemberTable();
+
+}
+
+
+/*******************************************************
+ * MEMBER INPUT CHANGE
+ *******************************************************/
+
+function memberInputChanged(event) {
+
+  const input =
+    event.target;
+
+
+  const index =
+    Number(
+      input.dataset.index
+    );
+
+
+  const field =
+    input.dataset.field;
+
+
+  /*
+   * Index 0 = head.
+   * Head data lives on Page 2.
+   */
+
+  if (index === 0) {
+
+    return;
+
+  }
+
+
+  const member =
+    additionalMembers[
+      index - 1
+    ];
+
+
+  if (member) {
+
+    member[field] =
+      input.value;
+
+  }
+
+}
+
+
+/*******************************************************
+ * MEMBER TABLE
+ *******************************************************/
+
+function renderMemberTable() {
+
+  const body =
+    document.getElementById(
+      'memberTableBody'
+    );
+
+
+  body.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const row =
+        document.createElement(
+          'tr'
+        );
+
+
+      row.innerHTML = `
+
+        <td>
+          ${index + 1}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.fullName
+          )}
+        </td>
+
+        <td>
+          ${formatDate(
+            member.dateOfBirth
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.relation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.occupation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            buildLocation(member)
+          )}
+        </td>
+
+        <td>
+
+          ${
+            member.isHead
+            ?
+            '<span>—</span>'
+            :
+            `
+              <button
+                type="button"
+                class="action-button delete-button"
+                onclick="removeMember(${index})">
+
+                🗑
+
+              </button>
+            `
+          }
+
+        </td>
+
+      `;
+
+
+      body.appendChild(row);
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * MEMBER COUNTER
+ *******************************************************/
+
+function updateMemberCounter() {
+
+  const total =
+    getAllMembers().length;
+
+
+  document
+    .getElementById(
+      'memberCount'
+    )
+    .textContent =
+      total +
+      ' / ' +
+      settings.maxMembers +
+      ' members';
+
+
+  document
+    .getElementById(
+      'addMemberButton'
+    )
+    .disabled =
+      total >= settings.maxMembers;
+
+}
+
+
+/*******************************************************
+ * BUILD PREVIEW
+ *******************************************************/
+
+function buildPreview() {
+
+  const ward =
+    getValue('parishWard');
+
+
+  const house =
+    getValue('houseName');
+
+
+  document
+    .getElementById(
+      'previewHouseWard'
+    )
+    .textContent =
+      house +
+      ' - ' +
+      settings.parishName;
+
+
+  document
+    .getElementById(
+      'previewWard'
+    )
+    .textContent =
+      ward;
+
+
+  document
+    .getElementById(
+      'previewMobile'
+    )
+    .textContent =
+      getValue('mobile');
+
+
+  document
+    .getElementById(
+      'previewEmail'
+    )
+    .textContent =
+      getValue('email') ||
+      '—';
+
+
+  document
+    .getElementById(
+      'previewAddress'
+    )
+    .textContent =
+      getValue('address') +
+      ' - ' +
+      getValue('pinCode');
+
+
+  document
+    .getElementById(
+      'previewEconomic'
+    )
+    .textContent =
+      getValue('economicStatus');
+
+
+  document
+    .getElementById(
+      'previewResidence'
+    )
+    .textContent =
+      getValue('residenceYears');
+
+
+  document
+    .getElementById(
+      'previewPublications'
+    )
+    .textContent =
+      getValue('publications') ||
+      'None';
+
+
+  renderPreviewMembers();
+
+
+  document
+    .getElementById(
+      'verificationBadge'
+    )
+    .textContent =
+      'Unverified';
+
+
+  document
+    .getElementById(
+      'verificationBadge'
+    )
+    .classList
+    .remove('verified');
+
+}
+
+
+/*******************************************************
+ * PREVIEW MEMBER TABLE
+ *******************************************************/
+
+function renderPreviewMembers() {
+
+  const body =
+    document.getElementById(
+      'previewMemberTable'
+    );
+
+
+  body.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const row =
+        document.createElement(
+          'tr'
+        );
+
+
+      row.innerHTML = `
+
+        <td>
+          ${index + 1}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.fullName
+          )}
+        </td>
+
+        <td>
+          ${formatDate(
+            member.dateOfBirth
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.relation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            member.occupation
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            buildLocation(member)
+          )}
+        </td>
+
+      `;
+
+
+      body.appendChild(row);
+
+    }
+  );
+
+
+  renderDetailedPreview();
+
+}
+
+
+/*******************************************************
+ * DETAILED PREVIEW
+ *******************************************************/
+
+function renderDetailedPreview() {
+
+  const container =
+    document.getElementById(
+      'detailedPreview'
+    );
+
+
+  container.innerHTML = '';
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  allMembers.forEach(
+    function(member, index) {
+
+      const card =
+        document.createElement(
+          'div'
+        );
+
+
+      card.className =
+        'detail-card';
+
+
+      card.innerHTML = `
+
+        <div class="detail-title">
+
+          ${index + 1}.
+          ${escapeHtml(member.fullName)}
+
+          ${
+            member.isHead
+            ?
+            ' — SELF'
+            :
+            ''
+          }
+
+        </div>
+
+
+        <div class="detail-grid">
+
+
+          ${detailItem(
+            'Current Status',
+            member.currentStatus
+          )}
+
+
+          ${detailItem(
+            'Date',
+            formatDate(member.date)
+          )}
+
+
+          ${detailItem(
+            'Qualification',
+            member.qualification
+          )}
+
+
+          ${detailItem(
+            'Occupation',
+            member.occupation
+          )}
+
+
+          ${detailItem(
+            'Location',
+            buildFullLocation(member)
+          )}
+
+
+          ${detailItem(
+            'Health Condition',
+            member.healthCondition
+          )}
+
+
+          ${detailItem(
+            'Practicing Catholic',
+            member.practicingCatholic
+          )}
+
+
+          ${detailItem(
+            'Church Activities',
+            member.churchActivities
+          )}
+
+
+          ${detailItem(
+            'Relation with Head',
+            member.relation
+          )}
+
+
+        </div>
+
+      `;
+
+
+      container.appendChild(card);
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * DETAIL ITEM
+ *******************************************************/
+
+function detailItem(label, value) {
+
+  return `
+
+    <div class="detail-item">
+
+      <label>
+        ${escapeHtml(label)}
+      </label>
+
+      <span>
+        ${escapeHtml(
+          value || '—'
+        )}
+      </span>
+
+    </div>
+
+  `;
+
+}
+
+
+/*******************************************************
+ * VERIFY AND SUBMIT
+ *******************************************************/
+
+function verifyAndSubmit() {
+
+  if (
+    !validatePage(1) ||
+    !validatePage(2) ||
+    !validatePage(3)
+  ) {
+
+    return;
+
+  }
+
+
+  const allMembers =
+    getAllMembers();
+
+
+  /*
+   * Final client-side validation.
+   */
+
+  for (
+    let i = 0;
+    i < allMembers.length;
+    i++
+  ) {
+
+    const member =
+      allMembers[i];
+
+
+    const requiredFields = [
+
+      ['fullName', 'Full Name'],
+
+      ['dateOfBirth', 'Date of Birth'],
+
+      ['currentStatus', 'Current Status'],
+
+      ['qualification', 'Qualification'],
+
+      ['occupation', 'Occupation'],
+
+      ['country', 'Country'],
+
+      ['state', 'State'],
+
+      ['city', 'City'],
+
+      ['healthCondition', 'Health Condition'],
+
+      ['practicingCatholic', 'Practicing Catholic'],
+
+      ['churchActivities', 'Church Activities'],
+
+      ['relation', 'Relation with Head']
+
+    ];
+
+
+    for (
+      let j = 0;
+      j < requiredFields.length;
+      j++
+    ) {
+
+      const key =
+        requiredFields[j][0];
+
+
+      const label =
+        requiredFields[j][1];
+
+
+      if (
+        !member[key] ||
+        String(member[key]).trim() === ''
+      ) {
+
+        alert(
+          label +
+          ' is required for family member ' +
+          (i + 1) +
+          '.'
+        );
+
+        return;
+
+      }
+
+    }
+
+  }
+
+
+  /*
+   * Show verified state.
+   */
+
+  const badge =
+    document.getElementById(
+      'verificationBadge'
+    );
+
+
+  badge.textContent =
+    'Verified';
+
+
+  badge.classList.add(
+    'verified'
+  );
+
+
+  /*
+   * Confirm.
+   */
+
+  const confirmed =
+    confirm(
+      'Please confirm that all the information is correct.\n\n' +
+      'Click OK to submit this family.'
+    );
+
+
+  if (!confirmed) {
+
+    return;
+
+  }
+
+
+  const data =
+    collectFamilyData();
+
+
+  setLoading(true);
+
+
+  document
+    .getElementById(
+      'submitButton'
+    )
+    .disabled = true;
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        setLoading(false);
+
+        document
+          .getElementById(
+            'submitButton'
+          )
+          .disabled = false;
+
+
+        showSuccess(result);
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        setLoading(false);
+
+        document
+          .getElementById(
+            'submitButton'
+          )
+          .disabled = false;
+
+
+        alert(
+          'Unable to save information.\n\n' +
+          error.message
+        );
+
+      }
+    )
+
+    .saveFamily(data);
+
+}
+
+
+/*******************************************************
+ * COLLECT COMPLETE FAMILY DATA
+ *******************************************************/
+
+function collectFamilyData() {
+
+  return {
+
+    parishName:
+      getValue('parishName'),
+
+    parishWard:
+      getValue('parishWard'),
+
+    houseName:
+      getValue('houseName'),
+
+    headName:
+      getValue('headName'),
+
+    mobile:
+      getValue('mobile'),
+
+    email:
+      getValue('email'),
+
+    address:
+      getValue('address'),
+
+    pinCode:
+      getValue('pinCode'),
+
+    residenceYears:
+      getValue('residenceYears'),
+
+    economicStatus:
+      getValue('economicStatus'),
+
+    publications:
+      getValue('publications'),
+
+
+    members:
+      getAllMembers()
+
+  };
+
+}
+
+
+/*******************************************************
+ * SUCCESS
+ *******************************************************/
+
+function showSuccess(result) {
+
+  document
+    .getElementById(
+      'successFamilyId'
+    )
+    .textContent =
+      result.familyId;
+
+
+  document
+    .getElementById(
+      'successMembers'
+    )
+    .textContent =
+      result.memberCount +
+      ' family member(s) saved.';
+
+
+  document
+    .getElementById(
+      'successModal'
+    )
+    .classList
+    .remove('hidden');
+
+}
+
+
+/*******************************************************
+ * START NEW FAMILY
+ *******************************************************/
+
+function startNewFamily() {
+
+  document
+    .getElementById(
+      'successModal'
+    )
+    .classList
+    .add('hidden');
+
+
+  /*
+   * Reset all standard fields.
+   */
+
+  document
+    .querySelectorAll(
+      'input, textarea'
+    )
+    .forEach(
+      function(input) {
+
+        if (
+          !input.readOnly
+        ) {
+
+          input.value = '';
+
+        }
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      'select'
+    )
+    .forEach(
+      function(select) {
+
+        select.selectedIndex = 0;
+
+      }
+    );
+
+
+  /*
+   * Restore defaults.
+   */
+
+  document
+    .getElementById(
+      'parishName'
+    )
+    .value =
+      settings.parishName;
+
+
+  additionalMembers = [];
+
+
+  currentPage = 1;
+
+
+  showPage(1);
+
+}
+
+
+/*******************************************************
+ * SET LOADING
+ *******************************************************/
+
+function setLoading(show) {
+
+  const loading =
+    document.getElementById(
+      'loading'
+    );
+
+
+  if (show) {
+
+    loading.classList.remove(
+      'hidden'
+    );
+
+  } else {
+
+    loading.classList.add(
+      'hidden'
+    );
+
+  }
+
+}
+
+
+/*******************************************************
+ * GET VALUE
+ *******************************************************/
+
+function getValue(id) {
+
+  const element =
+    document.getElementById(id);
+
+
+  if (!element) {
+
+    return '';
+
+  }
+
+
+  return String(
+    element.value || ''
+  ).trim();
+
+}
+
+
+/*******************************************************
+ * BUILD LOCATION
+ *******************************************************/
+
+function buildLocation(member) {
+
+  const parts = [];
+
+
+  if (member.city) {
+
+    parts.push(
+      member.city
+    );
+
+  }
+
+
+  if (member.state) {
+
+    parts.push(
+      member.state
+    );
+
+  }
+
+
+  return parts.join(', ');
+
+}
+
+
+/*******************************************************
+ * BUILD FULL LOCATION
+ *******************************************************/
+
+function buildFullLocation(member) {
+
+  const parts = [];
+
+
+  if (member.city) {
+
+    parts.push(
+      member.city
+    );
+
+  }
+
+
+  if (member.state) {
+
+    parts.push(
+      member.state
+    );
+
+  }
+
+
+  if (member.country) {
+
+    parts.push(
+      member.country
+    );
+
+  }
+
+
+  return parts.join(', ');
+
+}
+
+
+/*******************************************************
+ * DATE FORMAT
+ *******************************************************/
+
+function formatDate(value) {
+
+  if (!value) {
+
+    return '—';
+
+  }
+
+
+  const parts =
+    value.split('-');
+
+
+  if (
+    parts.length !== 3
+  ) {
+
+    return value;
+
+  }
+
+
+  return (
+    parts[2] +
+    '-' +
+    parts[1] +
+    '-' +
+    parts[0]
+  );
+
+}
+
+
+/*******************************************************
+ * ESCAPE HTML
+ *******************************************************/
+
+function escapeHtml(value) {
+
+  if (
+    value === undefined ||
+    value === null
+  ) {
+
+    return '';
+
+  }
+
+
+  return String(value)
+
+    .replace(/&/g, '&amp;')
+
+    .replace(/</g, '&lt;')
+
+    .replace(/>/g, '&gt;')
+
+    .replace(/"/g, '&quot;')
+
+    .replace(/'/g, '&#039;');
+
+}
+
+
+/*******************************************************
+ * ESCAPE ATTRIBUTE
+ *******************************************************/
+
+function escapeAttribute(value) {
+
+  return escapeHtml(value);
+
+}
+
+
+/*******************************************************
+ * OPTIONS
+ *******************************************************/
+
+function option(selected, value) {
+
+  return `
+
+    <option
+      value="${escapeAttribute(value)}"
+      ${selected === value ? 'selected' : ''}>
+
+      ${escapeHtml(value)}
+
+    </option>
+
+  `;
+
+}
+
+
+function statusOptions(selected) {
+
+  const values = [
+
+    'Married',
+    'Unmarried',
+    'Divorced',
+    'Priesthood',
+    'Consecrated Life'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function qualificationOptions(selected) {
+
+  const values = [
+
+    'Student',
+    'Below SSLC',
+    'SSLC',
+    'Pre Degree / + 2',
+    'Graduate',
+    'Post Graduate',
+    'PhD'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function occupationOptions(selected) {
+
+  const values = [
+
+    'Unemployed',
+    'Employed',
+    'Housewife',
+    'Business',
+    'Farmer',
+    'Self Employed'
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function countryOptions(selected) {
+
+  const values = [
+
+    'India',
+    'United Arab Emirates',
+    'Saudi Arabia',
+    'Qatar',
+    'Oman',
+    'Kuwait',
+    'Bahrain',
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'Other'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function stateOptions(selected) {
+
+  const values = [
+
+    'Kerala',
+    'Tamil Nadu',
+    'Karnataka',
+    'Maharashtra',
+    'Delhi',
+    'Other'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function healthOptions(selected) {
+
+  const values = [
+
+    
+    'Sick',
+    'Bedridden',
+    'Healthy',
+    'Other'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function yesNoOptions(selected) {
+
+  const values = [
+
+    'Yes',
+    'No'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function churchActivityOptions(selected) {
+
+  const values = [
+
+    'Mission League',
+    'Vincent de Paul',
+    'KCYM',
+    'Nothing as Regular',
+    'Catholic Congress',
+    'DFC',
+    'KLM',
+    'Prayer Group',
+    'Parish Counsellor',
+    'Pithruvedhi',
+    'Mathruvedhi',
+    'Altar Boys',
+    'Catechists',
+    'Jesus Youth'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+
+function relationOptions(selected) {
+
+  const values = [
+
+    'Brother',
+    'Daughter',
+    'Daughter in Law',
+    'Father',
+    'Sister',
+    'Grand Father',
+    'Grand Mother',
+    'Grand Son',
+    'Grand Daughter',
+    'Husband',
+    'Mother',
+    'Wife',
+    'Son',
+    'Son in Law',
+    'Father-in-law',
+    'Mother-in-law',
+    'Brother-in-law',
+    'Sister-in-law'
+
+  ];
+
+
+  return `
+
+    <option value="">
+      --- Select ---
+    </option>
+
+  ` +
+
+  values
+    .map(
+      value =>
+        option(selected, value)
+    )
+    .join('');
+
+}
+
+</script>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+  <!-- =================================================
+       TOP HEADER
+  ================================================== -->
+
+  <header class="top-header">
+
+    <div>
+
+      <div class="small-title">
+        Family Information
+      </div>
+
+      <h1>
+        Parish Family Survey
+      </h1>
+
+    </div>
+
+
+    <div class="progress-area">
+
+      <span id="progressText">
+        Page 1 of 4
+      </span>
+
+      <div class="progress-bar">
+
+        <div
+          id="progressFill"
+          class="progress-fill">
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =================================================
+       MAIN CONTAINER
+  ================================================== -->
+
+  <main class="container">
+
+
+    <!-- =================================================
+         PAGE 1
+    ================================================== -->
+
+    <section
+      id="page1"
+      class="page active">
+
+
+      <div class="page-heading">
+
+        <div class="page-category">
+          Basic Information
+        </div>
+
+        <h2>
+          Page 1
+        </h2>
+
+      </div>
+
+
+      <div class="form-grid">
+
+
+        <!-- PARISH -->
+
+        <div class="field">
+
+          <label>
+            Name of the Parish
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            id="parishName"
+            readonly>
+
+        </div>
+
+
+        <!-- WARD -->
+
+        <div class="field">
+
+          <label>
+            Name of the Parish Ward
+            <span>*</span>
+          </label>
+
+          <select
+            id="parishWard"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- HOUSE NAME -->
+
+        <div class="field">
+
+          <label>
+            House Name
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            id="houseName"
+            required>
+
+        </div>
+
+
+        <!-- HEAD NAME -->
+
+        <div class="field">
+
+          <label>
+            Name of the Head of the Family
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            id="headName"
+            required>
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <div class="field">
+
+          <label>
+            Mobile number
+            <span>*</span>
+          </label>
+
+          <input
+            type="tel"
+            id="mobile"
+            maxlength="10"
+            inputmode="numeric"
+            placeholder="10 digit mobile number"
+            required>
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="field">
+
+          <label>
+            Email Address (if any)
+          </label>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="example@gmail.com">
+
+        </div>
+
+
+        <!-- ADDRESS -->
+
+        <div class="field field-wide">
+
+          <label>
+            Permanent Address
+            (House Number, Street name)
+            <span>*</span>
+          </label>
+
+          <textarea
+            id="address"
+            rows="3"
+            required></textarea>
+
+        </div>
+
+
+        <!-- PIN -->
+
+        <div class="field">
+
+          <label>
+            Pin Code
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            id="pinCode"
+            maxlength="6"
+            inputmode="numeric"
+            required>
+
+        </div>
+
+
+        <!-- RESIDENCE -->
+
+        <div class="field">
+
+          <label>
+            Duration of Residence in this Parish
+            (in years)
+            <span>*</span>
+          </label>
+
+          <input
+            type="number"
+            id="residenceYears"
+            min="0"
+            step="0.1"
+            required>
+
+        </div>
+
+
+        <!-- ECONOMIC STATUS -->
+
+        <div class="field">
+
+          <label>
+            Economic Status of the family
+            (below avg. / avg. / above avg.)
+            <span>*</span>
+          </label>
+
+          <select
+            id="economicStatus"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option>
+              Below Average (₹4 Lakhs or below annually)
+            </option>
+
+            <option>
+              Average (₹4 Lakhs - ₹8 Lakhs annually)
+            </option>
+
+            <option>
+              Above Average (₹8 Lakhs or more annually)
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- PUBLICATIONS -->
+
+        <div class="field">
+
+          <label>
+            Do you subscribe to any newspaper /
+            publications?
+            <small>
+              (If yes, specify the names)
+            </small>
+          </label>
+
+          <input
+            type="text"
+            id="publications"
+            placeholder="Enter publication names, if any">
+
+        </div>
+
+
+      </div>
+
+
+      <!-- PAGE NAVIGATION -->
+
+      <div class="navigation right">
+
+        <button
+          type="button"
+          class="btn primary"
+          onclick="goToPage(2)">
+
+          Go To Page 2
+
+          <span>→</span>
+
+        </button>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         PAGE 2
+    ================================================== -->
+
+    <section
+      id="page2"
+      class="page">
+
+
+      <div class="page-heading">
+
+        <div class="page-category">
+          Head of the Family Information
+        </div>
+
+        <h2>
+          Page 2
+        </h2>
+
+      </div>
+
+
+      <div class="form-grid">
+
+
+        <!-- FULL NAME -->
+
+        <div class="field">
+
+          <label>
+            Full Name
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            id="headFullName"
+            required>
+
+        </div>
+
+
+        <!-- DOB -->
+
+        <div class="field">
+
+          <label>
+            Date of Birth
+            <span>*</span>
+          </label>
+
+          <input
+            type="date"
+            id="headDOB"
+            required>
+
+        </div>
+
+
+        <!-- CURRENT STATUS -->
+
+        <div class="field">
+
+          <label>
+            Current Status
+            <span>*</span>
+          </label>
+
+          <select
+            id="headStatus"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option>Unmarried</option>
+            <option>Married</option>
+            <option>Divorced</option>
+            <option>Priesthood</option>
+            <option>Consecrated Life</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- DATE -->
+
+        <div class="field">
+
+          <label>
+            Date
+          </label>
+
+          <input
+            type="date"
+            id="headDate">
+
+        </div>
+
+
+        <!-- QUALIFICATION -->
+
+        <div class="field">
+
+          <label>
+            Qualification
+            <span>*</span>
+          </label>
+
+          <select
+            id="headQualification"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option>Student</option>
+            <option>Below SSLC</option>
+            <option>SSLC</option>
+            <option>Pre Degree / + 2</option>
+            <option>Graduate</option>
+            <option>Post Graduate</option>
+            <option>PhD</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- OCCUPATION -->
+
+        <div class="field">
+
+          <label>
+            Occupation
+            <span>*</span>
+          </label>
+
+          <select
+            id="headOccupation"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option>Unemployed</option>
+            <option>Employed</option>
+            <option>Housewife</option>
+            <option>Business</option>
+            <option>Farmer</option>
+            <option>Self Employed</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- COUNTRY -->
+
+        <div class="field">
+
+          <label>
+            Country
+            <span>*</span>
+          </label>
+
+          <select
+            id="headCountry"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option selected>India</option>
+            <option>United Arab Emirates</option>
+            <option>Saudi Arabia</option>
+            <option>Qatar</option>
+            <option>Oman</option>
+            <option>Kuwait</option>
+            <option>Bahrain</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Canada</option>
+            <option>Australia</option>
+            <option>Other</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- STATE -->
+
+        <div class="field">
+
+          <label>
+            State
+            <span>*</span>
+          </label>
+
+          <select
+            id="headState"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option selected>Kerala</option>
+            <option>Tamil Nadu</option>
+            <option>Karnataka</option>
+            <option>Maharashtra</option>
+            <option>Delhi</option>
+            <option>Other</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- CITY -->
+
+        <div class="field">
+
+          <label>
+            City
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            id="headCity"
+            required>
+
+        </div>
+
+
+        <!-- HEALTH -->
+
+        <div class="field">
+
+          <label>
+            Health condition
+            <span>*</span>
+          </label>
+
+          <select
+            id="headHealth"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            
+            <option>Sick</option>
+            <option>Bedridden</option>
+            <option>Healthy</option>
+            <option>Other</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- CATHOLIC -->
+
+        <div class="field">
+
+          <label>
+            Are you a Practicing Catholic?
+            <span>*</span>
+          </label>
+
+          <select
+            id="headCatholic"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option>Yes</option>
+            <option>No</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- CHURCH ACTIVITIES -->
+
+        <div class="field">
+
+          <label>
+            Are you active in any of the Church Activities?
+            <span>*</span>
+          </label>
+
+          <select
+            id="headChurchActivity"
+            required>
+
+            <option value="">
+              --- Select ---
+            </option>
+
+            <option>Mission League</option>
+            <option>Vincent de Paul</option>
+            <option>KCYM</option>
+            <option>Nothing as Regular</option>
+            <option>Catholic Congress</option>
+            <option>DFC</option>
+            <option>KLM</option>
+            <option>Prayer Group</option>
+            <option>Parish Counsellor</option>
+            <option>Pithruvedhi</option>
+            <option>Altar Boys</option>
+            <option>Catechists</option>
+            <option>Jesus Youth</option>
+
+          </select>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- NAVIGATION -->
+
+      <div class="navigation">
+
+        <button
+          type="button"
+          class="btn secondary"
+          onclick="goToPage(1)">
+
+          ← Back to Page 1
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn primary"
+          onclick="goToPage(3)">
+
+          Go To Page 3
+
+          <span>→</span>
+
+        </button>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         PAGE 3
+    ================================================== -->
+
+    <section
+      id="page3"
+      class="page">
+
+
+      <div class="page-heading">
+
+        <div class="page-category">
+          Other Family Members Information
+        </div>
+
+        <h2>
+          Page 3
+        </h2>
+
+      </div>
+
+
+      <div class="info-message">
+
+        <strong>Family Head is automatically included.</strong>
+
+        The Head of Family will appear as
+        <strong>SELF</strong>.
+        Use <strong>+ Add Family Member</strong>
+        to add other members.
+
+      </div>
+
+
+      <!-- MEMBER FORM -->
+
+      <div
+        id="memberFormArea">
+      </div>
+
+
+      <!-- ADD MEMBER -->
+
+      <div class="add-member-row">
+
+        <button
+          type="button"
+          id="addMemberButton"
+          class="btn add"
+          onclick="addFamilyMember()">
+
+          + Add Family Member
+
+        </button>
+
+
+        <span
+          id="memberCount">
+          1 / 20 members
+        </span>
+
+      </div>
+
+
+      <!-- MEMBER TABLE -->
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>#</th>
+              <th>Full Name</th>
+              <th>Date of Birth</th>
+              <th>Relation</th>
+              <th>Occupation</th>
+              <th>Current Location</th>
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody
+            id="memberTableBody">
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- NAVIGATION -->
+
+      <div class="navigation">
+
+        <button
+          type="button"
+          class="btn secondary"
+          onclick="goToPage(2)">
+
+          ← Back to Page 2
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn primary"
+          onclick="goToPage(4)">
+
+          Go To Page 4
+
+          <span>→</span>
+
+        </button>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         PAGE 4
+    ================================================== -->
+
+    <section
+      id="page4"
+      class="page">
+
+
+      <div class="page-heading preview-heading">
+
+        <div>
+
+          <div class="page-category">
+            Preview Information
+          </div>
+
+          <h2>
+            Page 4
+          </h2>
+
+        </div>
+
+
+        <div
+          id="verificationBadge"
+          class="badge">
+          Unverified
+        </div>
+
+      </div>
+
+
+      <!-- BASIC PREVIEW -->
+
+      <div class="preview-grid">
+
+
+        <div class="preview-item">
+
+          <label>
+            House Name & Ward
+          </label>
+
+          <div id="previewHouseWard">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Ward
+          </label>
+
+          <div id="previewWard">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Mobile number
+          </label>
+
+          <div id="previewMobile">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Email Address (if any)
+          </label>
+
+          <div id="previewEmail">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Permanent Address
+          </label>
+
+          <div id="previewAddress">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Economic Status
+          </label>
+
+          <div id="previewEconomic">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Duration of Residence
+          </label>
+
+          <div id="previewResidence">
+          </div>
+
+        </div>
+
+
+        <div class="preview-item">
+
+          <label>
+            Publications
+          </label>
+
+          <div id="previewPublications">
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- FAMILY INFORMATION -->
+
+      <h3 class="preview-title">
+        Family Information
+      </h3>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>#</th>
+              <th>Full Name</th>
+              <th>Date of Birth</th>
+              <th>Relation</th>
+              <th>Occupation</th>
+              <th>Current Location</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody
+            id="previewMemberTable">
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- DETAILED MEMBER PREVIEW -->
+
+      <div
+        id="detailedPreview">
+      </div>
+
+
+      <!-- NAVIGATION -->
+
+      <div class="navigation">
+
+        <button
+          type="button"
+          class="btn secondary"
+          onclick="goToPage(3)">
+
+          ← Back to Page 3
+
+        </button>
+
+
+        <button
+          type="button"
+          id="submitButton"
+          class="btn verify"
+          onclick="verifyAndSubmit()">
+
+          Verified & Submit
+
+        </button>
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =================================================
+       LOADING
+  ================================================== -->
+
+  <div
+    id="loading"
+    class="overlay hidden">
+
+    <div class="loader"></div>
+
+    <div>
+      Saving information...
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       SUCCESS
+  ================================================== -->
+
+  <div
+    id="successModal"
+    class="modal hidden">
+
+    <div class="modal-box">
+
+      <div class="success-icon">
+        ✓
+      </div>
+
+      <h2>
+        Information Saved Successfully
+      </h2>
+
+      <p>
+        The family information has been saved.
+      </p>
+
+
+      <div class="family-id">
+
+        <span>
+          Family ID
+        </span>
+
+        <strong
+          id="successFamilyId">
+        </strong>
+
+      </div>
+
+
+      <p id="successMembers">
+      </p>
+
+
+      <button
+        type="button"
+        class="btn primary"
+        onclick="startNewFamily()">
+
+        Enter Another Family
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <?!= include('javascript'); ?>
+
+
+</div>
+
+</body>
+
+</html>
