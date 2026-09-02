@@ -5,6 +5,8 @@
 
 const CONFIG = {
 
+  SPREADSHEET_ID: '', // Optional: Paste your Google Sheet ID here if running as standalone script
+
   FAMILY_SHEET: 'Families',
   MEMBER_SHEET: 'FamilyMembers',
   SETTINGS_SHEET: 'Settings',
@@ -29,6 +31,19 @@ const CONFIG = {
   ]
 
 };
+
+function getSpreadsheet() {
+  if (CONFIG.SPREADSHEET_ID && String(CONFIG.SPREADSHEET_ID).trim() !== '') {
+    return SpreadsheetApp.openById(String(CONFIG.SPREADSHEET_ID).trim());
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error(
+      'Spreadsheet is not defined. Please paste your Google Sheet ID into CONFIG.SPREADSHEET_ID in Code.gs, OR open Apps Script directly from inside your Google Sheet (Extensions > Apps Script).'
+    );
+  }
+  return ss;
+}
 
 
 /*******************************************************
@@ -69,7 +84,7 @@ function include(filename) {
 function setupSheets() {
 
   const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
+    getSpreadsheet();
 
 
   /*****************************************************
@@ -279,7 +294,7 @@ function ensureHeaders(sheet, headers) {
 function getSettings() {
 
   const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
+    getSpreadsheet();
 
   const sheet =
     ss.getSheetByName(
@@ -350,7 +365,7 @@ function saveFamily(data) {
 
 
     const ss =
-      SpreadsheetApp.getActiveSpreadsheet();
+      getSpreadsheet();
 
 
     const familySheet =
