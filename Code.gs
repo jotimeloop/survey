@@ -34,15 +34,23 @@ const CONFIG = {
 
 function getSpreadsheet() {
   if (CONFIG.SPREADSHEET_ID && String(CONFIG.SPREADSHEET_ID).trim() !== '') {
-    return SpreadsheetApp.openById(String(CONFIG.SPREADSHEET_ID).trim());
+    try {
+      return SpreadsheetApp.openById(String(CONFIG.SPREADSHEET_ID).trim());
+    } catch (e) {
+      throw new Error(
+        'Spreadsheet ID "' + CONFIG.SPREADSHEET_ID + '" could not be opened. Please verify the SPREADSHEET_ID in CONFIG.SPREADSHEET_ID (Code.gs line 8).'
+      );
+    }
   }
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) {
-    throw new Error(
-      'Spreadsheet is not defined. Please paste your Google Sheet ID into CONFIG.SPREADSHEET_ID in Code.gs, OR open Apps Script directly from inside your Google Sheet (Extensions > Apps Script).'
-    );
-  }
-  return ss;
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (ss) {
+      return ss;
+    }
+  } catch (e) {}
+  throw new Error(
+    'Spreadsheet is not defined. Please paste your Google Sheet ID into CONFIG.SPREADSHEET_ID in Code.gs (line 8), OR open Apps Script directly from inside your Google Sheet (Extensions > Apps Script).'
+  );
 }
 
 
